@@ -30,6 +30,7 @@ namespace MemoryTest
             //   Memory memory = new Memory(process.Id);
 
             Memory memory = new Memory(1050 /* PID of the process */);
+            memory.BindProcess();
 
             string str = "Hello, World!";
 
