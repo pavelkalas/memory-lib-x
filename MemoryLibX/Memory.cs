@@ -231,7 +231,7 @@ namespace MemoryLibX
 
                 const int stringLength = 256;
                 byte[] buffer = new byte[stringLength];
-
+                
                 if (!DllImports.ReadProcessMemory(hProcess, finalAddress, buffer, buffer.Length, out int bytesRead) || bytesRead == 0)
                 {
                     return null;
