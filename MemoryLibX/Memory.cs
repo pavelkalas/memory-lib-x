@@ -234,7 +234,7 @@ namespace MemoryLibX
 
                 if (!DllImports.ReadProcessMemory(hProcess, finalAddress, buffer, buffer.Length, out int bytesRead) || bytesRead == 0)
                 {
-                    throw new InvalidOperationException("Failed to read memory.");
+                    return null;
                 }
 
                 return Encoding.UTF8.GetString(buffer, 0, bytesRead).TrimEnd('\0');
