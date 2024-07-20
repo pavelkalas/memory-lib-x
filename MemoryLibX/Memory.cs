@@ -124,7 +124,7 @@ namespace MemoryLibX
         /// <param name="text">String you want to write</param>
         /// <param name="size">Size to allocate</param>
         /// <returns>Returns boolean if was writing successfull</returns>
-        public bool WriteStringToAddress(string moduleName, int address, string text, int size)
+        public bool WriteStringToMemory(string moduleName, int address, string text, int size)
         {
             IntPtr hProcess = DllImports.OpenProcess(PROCESS_ALL_ACCESS, false, processId);
 
@@ -179,7 +179,7 @@ namespace MemoryLibX
         /// <param name="text">String you want to write</param>
         /// <param name="size">Size to allocate</param>
         /// <returns>Returns boolean if was writing successfull</returns>
-        public bool WriteStringToAddress(int address, string text, int size)
+        public bool WriteStringToMemory(int address, string text, int size)
         {
             IntPtr hProcess = DllImports.OpenProcess(PROCESS_ALL_ACCESS, false, processId);
             IntPtr finalAddress = new IntPtr(address);
