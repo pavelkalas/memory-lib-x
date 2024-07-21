@@ -430,25 +430,26 @@ namespace MemoryLibX
         }
 
         /// <summary>
-        /// Reads boolean from the memory address.
+        /// Reads a boolean from the memory address.
         /// </summary>
         /// <param name="address">Address in memory</param>
         /// <returns>Boolean</returns>
         public bool ReadBooleanFromMemory(int address)
         {
-            return ReadIntegerFromMemory(address) == 1;
+            return ReadIntegerFromMemory(address) != 0;
         }
 
         /// <summary>
-        /// Reads boolean from the memory and module address.
+        /// Reads a boolean from the memory and module address.
         /// </summary>
         /// <param name="address">Address in memory</param>
         /// <param name="module">EXE or DLL module base of pointing</param>
         /// <returns>Boolean</returns>
         public bool ReadBooleanFromMemory(int address, string module)
         {
-            return ReadIntegerFromMemory(address, module) == 1;
+            return ReadIntegerFromMemory(address, module) != 0;
         }
+
 
         /// <summary>
         /// Reads the float from the memory address and module in memory.
@@ -582,5 +583,264 @@ namespace MemoryLibX
             }
         }
 
+        /// <summary>
+        /// Writes a float to address and module in memory.
+        /// </summary>
+        /// <param name="moduleName">EXE or DLL module base of pointing</param>
+        /// <param name="address">Address offset in the module</param>
+        /// <param name="value">New float value</param>
+        /// <returns>True if successful, otherwise false</returns>
+        public bool WriteFloatToMemory(string moduleName, int address, float value)
+        {
+            IntPtr hProcess = DllImports.OpenProcess(PROCESS_ALL_ACCESS, false, processId);
+
+            if (hProcess == IntPtr.Zero)
+            {
+                return false;
+            }
+
+            Process process = Process.GetProcessById(processId);
+            IntPtr moduleBase = IntPtr.Zero;
+            foreach (ProcessModule module in process.Modules)
+            {
+                if (module.ModuleName == moduleName)
+                {
+                    moduleBase = module.BaseAddress;
+                    break;
+                }
+            }
+
+            if (moduleBase == IntPtr.Zero)
+            {
+                DllImports.CloseHandle(hProcess);
+                return false;
+            }
+
+            IntPtr finalAddress = IntPtr.Add(moduleBase, address);
+
+            byte[] buffer = BitConverter.GetBytes(value);
+
+            if (!DllImports.VirtualProtectEx(hProcess, finalAddress, (uint)buffer.Length, PAGE_EXECUTE_READWRITE, out uint oldProtect))
+            {
+                DllImports.CloseHandle(hProcess);
+                return false;
+            }
+
+            bool result = DllImports.WriteProcessMemory(hProcess, finalAddress, buffer, (uint)buffer.Length, out _);
+
+            DllImports.VirtualProtectEx(hProcess, finalAddress, (uint)buffer.Length, oldProtect, out _);
+
+            DllImports.CloseHandle(hProcess);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Writes a float to address in memory.
+        /// </summary>
+        /// <param name="address">Address in memory</param>
+        /// <param name="value">New float value</param>
+        /// <returns>True if successful, otherwise false</returns>
+        public bool WriteFloatToMemory(int address, float value)
+        {
+            IntPtr hProcess = DllImports.OpenProcess(PROCESS_ALL_ACCESS, false, processId);
+
+            if (hProcess == IntPtr.Zero)
+            {
+                return false;
+            }
+
+            IntPtr finalAddress = new IntPtr(address);
+
+            byte[] buffer = BitConverter.GetBytes(value);
+
+            if (!DllImports.VirtualProtectEx(hProcess, finalAddress, (uint)buffer.Length, PAGE_EXECUTE_READWRITE, out uint oldProtect))
+            {
+                DllImports.CloseHandle(hProcess);
+                return false;
+            }
+
+            bool result = DllImports.WriteProcessMemory(hProcess, finalAddress, buffer, (uint)buffer.Length, out _);
+
+            DllImports.VirtualProtectEx(hProcess, finalAddress, (uint)buffer.Length, oldProtect, out _);
+
+            DllImports.CloseHandle(hProcess);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Writes a double to address and module in memory.
+        /// </summary>
+        /// <param name="moduleName">EXE or DLL module base of pointing</param>
+        /// <param name="address">Address offset in the module</param>
+        /// <param name="value">New double value</param>
+        /// <returns>True if successful, otherwise false</returns>
+        public bool WriteDoubleToMemory(string moduleName, int address, double value)
+        {
+            IntPtr hProcess = DllImports.OpenProcess(PROCESS_ALL_ACCESS, false, processId);
+
+            if (hProcess == IntPtr.Zero)
+            {
+                return false;
+            }
+
+            Process process = Process.GetProcessById(processId);
+            IntPtr moduleBase = IntPtr.Zero;
+            foreach (ProcessModule module in process.Modules)
+            {
+                if (module.ModuleName == moduleName)
+                {
+                    moduleBase = module.BaseAddress;
+                    break;
+                }
+            }
+
+            if (moduleBase == IntPtr.Zero)
+            {
+                DllImports.CloseHandle(hProcess);
+                return false;
+            }
+
+            IntPtr finalAddress = IntPtr.Add(moduleBase, address);
+
+            byte[] buffer = BitConverter.GetBytes(value);
+
+            if (!DllImports.VirtualProtectEx(hProcess, finalAddress, (uint)buffer.Length, PAGE_EXECUTE_READWRITE, out uint oldProtect))
+            {
+                DllImports.CloseHandle(hProcess);
+                return false;
+            }
+
+            bool result = DllImports.WriteProcessMemory(hProcess, finalAddress, buffer, (uint)buffer.Length, out _);
+
+            DllImports.VirtualProtectEx(hProcess, finalAddress, (uint)buffer.Length, oldProtect, out _);
+
+            DllImports.CloseHandle(hProcess);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Writes a double to address in memory.
+        /// </summary>
+        /// <param name="address">Address in memory</param>
+        /// <param name="value">New double value</param>
+        /// <returns>True if successful, otherwise false</returns>
+        public bool WriteDoubleToMemory(int address, double value)
+        {
+            IntPtr hProcess = DllImports.OpenProcess(PROCESS_ALL_ACCESS, false, processId);
+
+            if (hProcess == IntPtr.Zero)
+            {
+                return false;
+            }
+
+            IntPtr finalAddress = new IntPtr(address);
+
+            byte[] buffer = BitConverter.GetBytes(value);
+
+            if (!DllImports.VirtualProtectEx(hProcess, finalAddress, (uint)buffer.Length, PAGE_EXECUTE_READWRITE, out uint oldProtect))
+            {
+                DllImports.CloseHandle(hProcess);
+                return false;
+            }
+
+            bool result = DllImports.WriteProcessMemory(hProcess, finalAddress, buffer, (uint)buffer.Length, out _);
+
+            DllImports.VirtualProtectEx(hProcess, finalAddress, (uint)buffer.Length, oldProtect, out _);
+
+            DllImports.CloseHandle(hProcess);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Writes a boolean to the address and module in memory.
+        /// </summary>
+        /// <param name="moduleName">EXE or DLL module base of pointing</param>
+        /// <param name="address">Address offset in the module</param>
+        /// <param name="value">New boolean value</param>
+        /// <returns>True if successful, otherwise false</returns>
+        public bool WriteBooleanToMemory(string moduleName, int address, bool value)
+        {
+            IntPtr hProcess = DllImports.OpenProcess(PROCESS_ALL_ACCESS, false, processId);
+
+            if (hProcess == IntPtr.Zero)
+            {
+                return false;
+            }
+
+            Process process = Process.GetProcessById(processId);
+            IntPtr moduleBase = IntPtr.Zero;
+            foreach (ProcessModule module in process.Modules)
+            {
+                if (module.ModuleName == moduleName)
+                {
+                    moduleBase = module.BaseAddress;
+                    break;
+                }
+            }
+
+            if (moduleBase == IntPtr.Zero)
+            {
+                DllImports.CloseHandle(hProcess);
+                return false;
+            }
+
+            IntPtr finalAddress = IntPtr.Add(moduleBase, address);
+
+            int intValue = value ? 1 : 0;
+            byte[] buffer = BitConverter.GetBytes(intValue);
+
+            if (!DllImports.VirtualProtectEx(hProcess, finalAddress, (uint)buffer.Length, PAGE_EXECUTE_READWRITE, out uint oldProtect))
+            {
+                DllImports.CloseHandle(hProcess);
+                return false;
+            }
+
+            bool result = DllImports.WriteProcessMemory(hProcess, finalAddress, buffer, (uint)buffer.Length, out _);
+
+            DllImports.VirtualProtectEx(hProcess, finalAddress, (uint)buffer.Length, oldProtect, out _);
+
+            DllImports.CloseHandle(hProcess);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Writes a boolean to the address in memory.
+        /// </summary>
+        /// <param name="address">Address in memory</param>
+        /// <param name="value">New boolean value</param>
+        /// <returns>True if successful, otherwise false</returns>
+        public bool WriteBooleanToMemory(int address, bool value)
+        {
+            IntPtr hProcess = DllImports.OpenProcess(PROCESS_ALL_ACCESS, false, processId);
+
+            if (hProcess == IntPtr.Zero)
+            {
+                return false;
+            }
+
+            IntPtr finalAddress = new IntPtr(address);
+
+            int intValue = value ? 1 : 0;
+            byte[] buffer = BitConverter.GetBytes(intValue);
+
+            if (!DllImports.VirtualProtectEx(hProcess, finalAddress, (uint)buffer.Length, PAGE_EXECUTE_READWRITE, out uint oldProtect))
+            {
+                DllImports.CloseHandle(hProcess);
+                return false;
+            }
+
+            bool result = DllImports.WriteProcessMemory(hProcess, finalAddress, buffer, (uint)buffer.Length, out _);
+
+            DllImports.VirtualProtectEx(hProcess, finalAddress, (uint)buffer.Length, oldProtect, out _);
+
+            DllImports.CloseHandle(hProcess);
+
+            return result;
+        }
     }
 }
