@@ -348,9 +348,8 @@ namespace MemoryLibX
         /// Writes a integer to address and module in memory.
         /// </summary>
         /// <param name="moduleName">EXE or DLL module base of pointing</param>
-        /// <param name="offset"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="value">New value</param>
+        /// <returns>Integer</returns>
         public bool WriteIntegerToMemory(string moduleName, int address, int value)
         {
             IntPtr hProcess = DllImports.OpenProcess(PROCESS_ALL_ACCESS, false, processId);
@@ -401,7 +400,7 @@ namespace MemoryLibX
         /// </summary>
         /// <param name="offset"></param>
         /// <param name="value"></param>
-        /// <returns></returns>
+        /// <returns>Integer</returns>
         public bool WriteIntegerToMemory(int address, int value)
         {
             IntPtr hProcess = DllImports.OpenProcess(PROCESS_ALL_ACCESS, false, processId);
@@ -429,5 +428,159 @@ namespace MemoryLibX
 
             return result;
         }
+
+        /// <summary>
+        /// Reads boolean from the memory address.
+        /// </summary>
+        /// <param name="address">Address in memory</param>
+        /// <returns>Boolean</returns>
+        public bool ReadBooleanFromMemory(int address)
+        {
+            return ReadIntegerFromMemory(address) == 1;
+        }
+
+        /// <summary>
+        /// Reads boolean from the memory and module address.
+        /// </summary>
+        /// <param name="address">Address in memory</param>
+        /// <param name="module">EXE or DLL module base of pointing</param>
+        /// <returns>Boolean</returns>
+        public bool ReadBooleanFromMemory(int address, string module)
+        {
+            return ReadIntegerFromMemory(address, module) == 1;
+        }
+
+        /// <summary>
+        /// Reads the float from the memory address and module in memory.
+        /// </summary>
+        /// <param name="address">Address in memory</param>
+        /// <param name="module">DLL or EXE module of base pointing</param>
+        /// <returns>Read float from memory</returns>
+        public float ReadFloatFromMemory(int address, string module)
+        {
+            IntPtr hProcess = DllImports.OpenProcess(PROCESS_VM_READ | PROCESS_QUERY_INFORMATION, false, processHandle.Id);
+
+            if (hProcess == IntPtr.Zero)
+            {
+                return -1.0f;
+            }
+
+            try
+            {
+                IntPtr moduleBaseAddress = GetModuleBaseAddress(module);
+                IntPtr finalAddress = IntPtr.Add(moduleBaseAddress, address);
+
+                byte[] buffer = new byte[sizeof(float)];
+
+                if (!DllImports.ReadProcessMemory(hProcess, finalAddress, buffer, buffer.Length, out int bytesRead) || bytesRead == 0)
+                {
+                    return -1.0f;
+                }
+
+                return BitConverter.ToSingle(buffer, 0);
+            }
+            finally
+            {
+                DllImports.CloseHandle(hProcess);
+            }
+        }
+
+        /// <summary>
+        /// Reads the float from the memory address in memory.
+        /// </summary>
+        /// <param name="address">Address in memory</param>
+        /// <returns>Read float from memory</returns>
+        public float ReadFloatFromMemory(int address)
+        {
+            IntPtr hProcess = DllImports.OpenProcess(PROCESS_VM_READ | PROCESS_QUERY_INFORMATION, false, processHandle.Id);
+
+            if (hProcess == IntPtr.Zero)
+            {
+                return -1.0f;
+            }
+
+            try
+            {
+                byte[] buffer = new byte[sizeof(float)];
+
+                if (!DllImports.ReadProcessMemory(hProcess, new IntPtr(address), buffer, buffer.Length, out int bytesRead) || bytesRead == 0)
+                {
+                    return -1.0f;
+                }
+
+                return BitConverter.ToSingle(buffer, 0);
+            }
+            finally
+            {
+                DllImports.CloseHandle(hProcess);
+            }
+        }
+
+        /// <summary>
+        /// Reads the double from the memory address and module in memory.
+        /// </summary>
+        /// <param name="address">Address in memory</param>
+        /// <param name="module">DLL or EXE module of base pointing</param>
+        /// <returns>Read double from memory</returns>
+        public double ReadDoubleFromMemory(int address, string module)
+        {
+            IntPtr hProcess = DllImports.OpenProcess(PROCESS_VM_READ | PROCESS_QUERY_INFORMATION, false, processHandle.Id);
+
+            if (hProcess == IntPtr.Zero)
+            {
+                return -1.0;
+            }
+
+            try
+            {
+                IntPtr moduleBaseAddress = GetModuleBaseAddress(module);
+                IntPtr finalAddress = IntPtr.Add(moduleBaseAddress, address);
+
+                byte[] buffer = new byte[sizeof(double)];
+
+                if (!DllImports.ReadProcessMemory(hProcess, finalAddress, buffer, buffer.Length, out int bytesRead) || bytesRead == 0)
+                {
+                    return -1.0;
+                }
+
+                return BitConverter.ToDouble(buffer, 0);
+            }
+            finally
+            {
+                DllImports.CloseHandle(hProcess);
+            }
+        }
+
+        /// <summary>
+        /// Reads the double from the memory address in memory.
+        /// </summary>
+        /// <param name="address">Address in memory</param>
+        /// <returns>Read double from memory</returns>
+        public double ReadDoubleFromMemory(int address)
+        {
+            IntPtr hProcess = DllImports.OpenProcess(PROCESS_VM_READ | PROCESS_QUERY_INFORMATION, false, processHandle.Id);
+
+            if (hProcess == IntPtr.Zero)
+            {
+                return -1.0;
+            }
+
+            try
+            {
+                byte[] buffer = new byte[sizeof(double)];
+
+                if (!DllImports.ReadProcessMemory(hProcess, new IntPtr(address), buffer, buffer.Length, out int bytesRead) || bytesRead == 0)
+                {
+                    return -1.0;
+                }
+
+                return BitConverter.ToDouble(buffer, 0);
+            }
+            finally
+            {
+                DllImports.CloseHandle(hProcess);
+            }
+        }
+
     }
 }
