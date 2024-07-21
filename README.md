@@ -6,8 +6,11 @@ This is a DLL library created for memory manipulation tasks. It provides functio
 
 ## Features
 
-- **Read and Write Strings:** Allows reading and writing strings to specified memory addresses.
-- **Read and Write Integers:** Enables reading and writing integer values from/to specified memory addresses.
+- **Read and Write Strings**: Allows you to read from and write strings to specific memory addresses.
+- **Read and Write Integers**: Enables reading from and writing integers to specified memory addresses.
+- **Read and Write Floats**: Supports reading from and writing float values to specified memory addresses.
+- **Read and Write Doubles**: Supports reading from and writing double values to specified memory addresses.
+- **Read and Write Booleans**: Enables reading from and writing boolean values to specified memory addresses.
 
 ## Usage
 
