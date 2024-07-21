@@ -34,7 +34,7 @@ namespace MemoryTest
 
             string str = "Hello, World!";
 
-            memory.WriteStringToAddress(0x0138C15 /* address */, str /* your string */, 16 /* allocation size */);
+            memory.WriteStringToMemory(0x0138C15 /* address */, str /* your string */, 16 /* allocation size */);
         }
     }
 }
